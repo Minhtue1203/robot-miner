@@ -2,7 +2,7 @@ package com.example.robominer.model;
 
 public class Grid {
     private Secteur[][] grid;
-    private
+
     public Grid() {
         // Initialiser une grille 10x10 de secteurs
         grid = new Secteur[10][10];

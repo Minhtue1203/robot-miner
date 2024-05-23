@@ -9,19 +9,13 @@ public class Robot extends Secteur {
     private int capacityExtraction;
     private int stockActuel;
 
-//    public Robot(int number, TypeOre typeOre, int capacityStorage, int capacityExtraction) {
-//        this.number = number;
-//        this.typeOre = typeOre;
-//        this.capacityStorage = capacityStorage;
-//        this.capacityExtraction = capacityExtraction;
-//        this.stockActuel = 0;
-
     public Robot(int number, MineralType mineralType, int capacityStorage, int capacityExtraction) {
         matrice[1][0] = 'R';
         matrice[1][1] = (char) ('0' + number);
         this.capacityStorage = capacityStorage;
         this.capacityExtraction = capacityExtraction;
         this.stockActuel = 0;
+        this.mineralType = mineralType;
     }
 
     public void move(String direction) {
@@ -34,5 +28,25 @@ public class Robot extends Secteur {
 
     public void deposit() {
         // Logique pour déposer
+    }
+
+    public MineralType getMineralType() {
+        return mineralType;
+    }
+
+    public int getCapacityStorage() {
+        return capacityStorage;
+    }
+
+    public int getCapacityExtraction() {
+        return capacityExtraction;
+    }
+
+    public int getStockActuel() {
+        return stockActuel;
+    }
+
+    public void setStockActuel(int stockActuel) {
+        this.stockActuel = stockActuel;
     }
 }

@@ -2,8 +2,12 @@ package com.example.robominer.controller;
 
 import com.example.robominer.model.*;
 import com.example.robominer.util.MineralType;
+import com.example.robominer.util.SecteurType;
 import com.example.robominer.view.GridView;
+
+import java.util.ArrayList;
 import java.util.Random;
+import java.util.List;
 
 public class GridController {
     private Grid grid;
@@ -14,10 +18,13 @@ public class GridController {
     private int warehouseCounter = 0;
     private int robotCounter = 0;
 
+    private List<SecteurInfo> addedSecteurs;
+
     public GridController(Grid grille, GridView view) {
         this.grid = grille;
         this.view = view;
         this.random = new Random();
+        this.addedSecteurs = new ArrayList<>();
     }
 
     public void addRandomWater(int count) {
@@ -57,8 +64,11 @@ public class GridController {
             int col = random.nextInt(grid.getCols());
             if (grid.isVide(row, col)) {
                 MineralType type = generateMineType(warehouseCounter);
-                grid.setSecteur(row, col, new Warehouse(warehouseCounter++, type));
+                warehouseCounter++;
+                int number = warehouseCounter;
+                grid.setSecteur(row, col, new Warehouse(number, type));
                 added++;
+                addedSecteurs.add(new SecteurInfo(SecteurType.WAREHOUSE, number, row, col));
             }
         }
     }

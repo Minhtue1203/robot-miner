@@ -16,4 +16,12 @@ public class Warehouse extends Secteur {
     public void store(int quantityMineral) {
         this.stock += quantityMineral;
     }
+
+    public MineralType getMineralType() {
+        return mineralType;
+    }
+
+    public int getStock() {
+        return stock;
+    }
 }
