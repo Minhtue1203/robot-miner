@@ -46,12 +46,24 @@ public class Mine extends Secteur {
         return mineralType;
     }
 
-    public void setRobot(Robot robot) {
+    public void addRobot(Robot robot) {
         matrice[1][0] = 'R';
         matrice[1][1] = (char) ('0' + robot.getNumber());
     }
 
+    public void removeRobot() {
+        System.out.println("remove");
+        matrice[0][0] = 'M';
+        matrice[0][1] = (char) ('0' + number);
+        matrice[1][0] = '.';
+        matrice[1][1] = '.';
+    }
+
     public int getNumber() {
         return this.number;
+    }
+
+    public boolean isEmpty () {
+        return this.quantity == 0;
     }
 }

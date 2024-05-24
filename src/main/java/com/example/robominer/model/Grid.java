@@ -32,4 +32,8 @@ public class Grid {
     public boolean isEmpty(int row, int col) {
         return grid[row][col] instanceof Empty;
     }
+
+    public boolean isPositionValid(int newRow, int newCol) {
+        return newRow >= 0 && newRow < getRows() && newCol >= 0 && newCol < getCols();
+    }
 }

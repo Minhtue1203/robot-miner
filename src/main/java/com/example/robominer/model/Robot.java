@@ -7,20 +7,24 @@ public class Robot extends Secteur {
     private MineralType mineralType;
     private int capacityStorage;
     private int capacityExtraction;
-    private int stockActuel;
+    private int currentStorage;
 
     public Robot(int number, MineralType mineralType, int capacityStorage, int capacityExtraction) {
         matrice[1][0] = 'R';
         matrice[1][1] = (char) ('0' + number);
         this.capacityStorage = capacityStorage;
         this.capacityExtraction = capacityExtraction;
-        this.stockActuel = 0;
+        this.currentStorage = 0;
         this.mineralType = mineralType;
         this.number = number;
     }
 
-    public void harvest(int amountCollected) {
-        this.stockActuel = this.stockActuel + amountCollected;
+    public void addStorage(int amount) {
+        this.currentStorage += amount;
+    }
+
+    public boolean hasStorageSpace() {
+        return this.currentStorage < this.capacityStorage;
     }
 
     public void deposit() {
@@ -39,15 +43,15 @@ public class Robot extends Secteur {
         return capacityExtraction;
     }
 
-    public int getStockActuel() {
-        return stockActuel;
-    }
-
-    public void setStockActuel(int stockActuel) {
-        this.stockActuel = stockActuel;
-    }
-
     public int getNumber() {
         return number;
+    }
+
+    public int getCurrentStorage() {
+        return currentStorage;
+    }
+
+    public void setCurrentStorage(int currentStorage) {
+        this.currentStorage = currentStorage;
     }
 }
