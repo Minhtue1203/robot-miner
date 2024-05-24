@@ -4,6 +4,7 @@ import com.example.robominer.model.*;
 import com.example.robominer.util.MineralType;
 import com.example.robominer.util.SecteurType;
 import com.example.robominer.view.GridView;
+import com.example.robominer.view.SecteurInfoView;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -12,6 +13,7 @@ import java.util.List;
 public class GridController {
     private Grid grid;
     private GridView view;
+    private SecteurInfoView secteurInfoView;
     private Random random;
 
     private int mineCounter = 0;
@@ -25,6 +27,7 @@ public class GridController {
         this.view = view;
         this.random = new Random();
         this.addedSecteurs = new ArrayList<>();
+        this.secteurInfoView = new SecteurInfoView();
     }
 
     public void addRandomWater(int count) {
@@ -36,24 +39,15 @@ public class GridController {
         while (added < count) {
             int row = random.nextInt(grid.getRows());
             int col = random.nextInt(grid.getCols());
-            if (grid.isVide(row, col)) {
+            if (grid.isEmpty(row, col)) {
                 MineralType type = generateMineType(mineCounter);
                 int quantity = generateMineQuantity();
-                grid.setSecteur(row, col, new Mine(mineCounter++, type, quantity));
+                mineCounter++;
+                int number = mineCounter;
+                grid.setSecteur(row, col, new Mine(number, type, quantity));
                 added++;
+                addedSecteurs.add(new SecteurInfo(SecteurType.MINE, number, row, col, type, quantity, quantity));
             }
-        }
-    }
-
-    private int generateMineQuantity() {
-        return 50 + random.nextInt(51);
-    }
-
-    private MineralType generateMineType(int count) {
-        if (count % 2 == 0) {
-            return MineralType.NICKEL;
-        } else {
-            return MineralType.GOLD;
         }
     }
 
@@ -62,13 +56,13 @@ public class GridController {
         while (added < count) {
             int row = random.nextInt(grid.getRows());
             int col = random.nextInt(grid.getCols());
-            if (grid.isVide(row, col)) {
+            if (grid.isEmpty(row, col)) {
                 MineralType type = generateMineType(warehouseCounter);
                 warehouseCounter++;
                 int number = warehouseCounter;
                 grid.setSecteur(row, col, new Warehouse(number, type));
                 added++;
-                addedSecteurs.add(new SecteurInfo(SecteurType.WAREHOUSE, number, row, col));
+                addedSecteurs.add(new SecteurInfo(SecteurType.WAREHOUSE, number, row, col, type, 0));
             }
         }
     }
@@ -78,12 +72,15 @@ public class GridController {
         while (added < count) {
             int row = random.nextInt(grid.getRows());
             int col = random.nextInt(grid.getCols());
-            if (grid.isVide(row, col)) {
+            if (grid.isEmpty(row, col)) {
                 MineralType type = generateMineType(robotCounter);
                 int capacityStorage = generateCapacityStorage();
                 int capacityExtraction = generateCapacityExtraction();
-                grid.setSecteur(row, col, new Robot(robotCounter++, type, capacityStorage, capacityExtraction));
+                robotCounter++;
+                int number = robotCounter;
+                grid.setSecteur(row, col, new Robot(number, type, capacityStorage, capacityExtraction));
                 added++;
+                addedSecteurs.add(new SecteurInfo(SecteurType.ROBOT, number, row, col, type, 0, capacityStorage));
             }
         }
     }
@@ -93,7 +90,7 @@ public class GridController {
         while (added < count) {
             int row = random.nextInt(grid.getRows());
             int col = random.nextInt(grid.getCols());
-            if (grid.isVide(row, col)) {
+            if (grid.isEmpty(row, col)) {
                 grid.setSecteur(row, col, sector);
                 added++;
             }
@@ -108,7 +105,22 @@ public class GridController {
         return 1 + random.nextInt(4);
     }
 
+    private int generateMineQuantity() {
+        return 50 + random.nextInt(51);
+    }
+
+    private MineralType generateMineType(int count) {
+        if (count % 2 == 0) {
+            return MineralType.NICKEL;
+        } else {
+            return MineralType.GOLD;
+        }
+    }
+
     public void updateView() {
         view.printGrid(grid);
+        System.out.println();
+        System.out.println();
+        secteurInfoView.printSecteurInfo(addedSecteurs);
     }
 }
