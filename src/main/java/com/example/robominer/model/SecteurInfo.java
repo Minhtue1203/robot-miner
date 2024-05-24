@@ -3,6 +3,9 @@ package com.example.robominer.model;
 import com.example.robominer.util.MineralType;
 import com.example.robominer.util.SecteurType;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class SecteurInfo {
     private SecteurType type;
     private int number;
@@ -37,5 +40,25 @@ public class SecteurInfo {
             return String.format("%s %d at (%d, %d) %s %d", type, number, row, col, mineralType, total);
         }
         return String.format("%s %d at (%d, %d) with %s %d / %d", type, number, row, col, mineralType, currentStock, total);
+    }
+
+    public int getRow() {
+        return this.row;
+    }
+
+    public int getCol() {
+        return this.col;
+    }
+
+    public SecteurType getType() {
+        return this.type;
+    }
+
+    public void setRow(int newRow) {
+        this.row = newRow;
+    }
+
+    public void setCol(int newCol) {
+        this.col = newCol;
     }
 }

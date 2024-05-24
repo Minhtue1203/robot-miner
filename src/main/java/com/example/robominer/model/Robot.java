@@ -16,6 +16,7 @@ public class Robot extends Secteur {
         this.capacityExtraction = capacityExtraction;
         this.stockActuel = 0;
         this.mineralType = mineralType;
+        this.number = number;
     }
 
     public void move(String direction) {
@@ -48,5 +49,9 @@ public class Robot extends Secteur {
 
     public void setStockActuel(int stockActuel) {
         this.stockActuel = stockActuel;
+    }
+
+    public int getNumber() {
+        return number;
     }
 }

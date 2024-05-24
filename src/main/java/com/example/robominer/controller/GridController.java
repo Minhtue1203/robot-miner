@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.List;
 
+import static com.example.robominer.util.Helper.*;
+
 public class GridController {
     private Grid grid;
     private GridView view;
@@ -21,6 +23,9 @@ public class GridController {
     private int robotCounter = 0;
 
     private List<SecteurInfo> addedSecteurs;
+    private List<int[]> robotPositions;
+    private int currentRobotIndex;
+    private List<Robot> addedRobots;
 
     public GridController(Grid grille, GridView view) {
         this.grid = grille;
@@ -28,6 +33,9 @@ public class GridController {
         this.random = new Random();
         this.addedSecteurs = new ArrayList<>();
         this.secteurInfoView = new SecteurInfoView();
+        this.robotPositions = new ArrayList<>();
+        this.currentRobotIndex = 0;
+        this.addedRobots = new ArrayList<>();
     }
 
     public void addRandomWater(int count) {
@@ -78,9 +86,12 @@ public class GridController {
                 int capacityExtraction = generateCapacityExtraction();
                 robotCounter++;
                 int number = robotCounter;
-                grid.setSecteur(row, col, new Robot(number, type, capacityStorage, capacityExtraction));
+                Robot robot =  new Robot(number, type, capacityStorage, capacityExtraction);
+                grid.setSecteur(row, col, robot);
                 added++;
+                addedRobots.add(robot);
                 addedSecteurs.add(new SecteurInfo(SecteurType.ROBOT, number, row, col, type, 0, capacityStorage));
+                robotPositions.add(new int[]{row, col});
             }
         }
     }
@@ -97,24 +108,67 @@ public class GridController {
         }
     }
 
-    private int generateCapacityStorage() {
-        return 5 + random.nextInt(11);
-    }
-
-    private int generateCapacityExtraction() {
-        return 1 + random.nextInt(4);
-    }
-
-    private int generateMineQuantity() {
-        return 50 + random.nextInt(51);
-    }
-
-    private MineralType generateMineType(int count) {
-        if (count % 2 == 0) {
-            return MineralType.NICKEL;
-        } else {
-            return MineralType.GOLD;
+    public boolean moveRobot(int[] robotPosition, int newRow, int newCol) {
+        int robotRow = robotPosition[0];
+        int robotCol = robotPosition[1];
+        if (newRow >= 0 && newRow < grid.getRows() && newCol >= 0 && newCol < grid.getCols() && grid.isEmpty(newRow, newCol)) {
+            Secteur cible = grid.getSecteur(newRow, newCol);
+            if(cible instanceof Empty) {
+                grid.setSecteur(robotRow, robotCol, new Empty());
+                robotPosition[0] = newRow;
+                robotPosition[1] = newCol;
+                System.out.println(getCurrentRobot().getNumber());
+                grid.setSecteur(newRow, newCol, getCurrentRobot());
+                updateAddedSecteurs(robotRow, robotCol, newRow, newCol);
+                return true;
+            } else if (cible instanceof Water) {
+                System.out.println("Le robot ne peut pas se déplacer dans l'eau.");
+            }
         }
+
+        return false;
+    }
+
+    private void updateAddedSecteurs(int oldRow, int oldCol, int newRow, int newCol) {
+        for (SecteurInfo secteurInfo : addedSecteurs) {
+            if (secteurInfo.getType().equals(SecteurType.ROBOT) && secteurInfo.getRow() == oldRow && secteurInfo.getCol() == oldCol) {
+                secteurInfo.setRow(newRow);
+                secteurInfo.setCol(newCol);
+                break;
+            }
+        }
+    }
+
+    public boolean moveRobotUp() {
+        int[] robotPosition = robotPositions.get(currentRobotIndex);
+        return moveRobot(robotPosition, robotPosition[0] - 1, robotPosition[1]);
+    }
+
+    public boolean moveRobotDown() {
+        int[] robotPosition = robotPositions.get(currentRobotIndex);
+        return moveRobot(robotPosition, robotPosition[0] + 1, robotPosition[1]);
+    }
+
+    public boolean moveRobotLeft() {
+        int[] robotPosition = robotPositions.get(currentRobotIndex);
+        return moveRobot(robotPosition, robotPosition[0], robotPosition[1] - 1);
+    }
+
+    public boolean moveRobotRight() {
+        int[] robotPosition = robotPositions.get(currentRobotIndex);
+        return moveRobot(robotPosition, robotPosition[0], robotPosition[1] + 1);
+    }
+
+    public void nextRobot() {
+        currentRobotIndex = (currentRobotIndex + 1) % robotPositions.size();
+    }
+
+    public Robot getCurrentRobot() {
+        return addedRobots.get(currentRobotIndex);
+    }
+
+    public int getCurrentRobotIndex() {
+        return currentRobotIndex;
     }
 
     public void updateView() {
