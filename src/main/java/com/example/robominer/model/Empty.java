@@ -1,7 +1,7 @@
 package com.example.robominer.model;
 
-public class Vide extends Secteur {
-    public Vide() {
+public class Empty extends Secteur {
+    public Empty() {
         // Par défaut, matrice est déjà vide (' ' initialisé dans Secteur)
     }
 }

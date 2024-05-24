@@ -1,6 +1,6 @@
 package com.example.robominer.util;
 
-public enum TypeOre {
-    OR,
+public enum MineralType {
+    GOLD,
     NICKEL
 }
