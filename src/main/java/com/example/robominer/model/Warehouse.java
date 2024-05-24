@@ -28,7 +28,7 @@ public class Warehouse extends Secteur {
     }
 
     public void addRobot(Robot robot) {
-        matrice[1][0] = 'E';
+        matrice[1][0] = 'R';
         matrice[1][1] = (char) ('0' + robot.getNumber());
     }
 
