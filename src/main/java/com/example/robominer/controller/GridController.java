@@ -224,7 +224,7 @@ public class GridController {
         Secteur secteur = grid.getSecteur(robotPosition[0], robotPosition[1]);
         if (secteur instanceof Warehouse) {
             Warehouse warehouse = (Warehouse) secteur;
-            Robot robot = (Robot) grid.getSecteur(robotPosition[0], robotPosition[1]);
+            Robot robot = getCurrentRobot();
             if (robot.getMineralType() == warehouse.getMineralType()) {
                 int storedAmount = robot.getCurrentStorage();
                 warehouse.addResources(storedAmount);
