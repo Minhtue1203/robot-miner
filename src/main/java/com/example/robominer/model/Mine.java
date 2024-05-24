@@ -6,13 +6,15 @@ public class Mine extends Secteur {
     private MineralType mineralType;
     private int quantity;
     private int total;
+    private int number;
 
-    public Mine(int mineNumber, MineralType mineralType, int quantity) {
+    public Mine(int number, MineralType mineralType, int quantity) {
         matrice[0][0] = 'M';
-        matrice[0][1] = (char) ('0' + mineNumber);
+        matrice[0][1] = (char) ('0' + number);
         this.mineralType = mineralType;
         this.quantity = quantity;
         this.total = quantity;
+        this.number = number;
     }
 
     public void extract(int quantity) {
@@ -32,7 +34,24 @@ public class Mine extends Secteur {
         return quantity;
     }
 
+    public void setQuantity(int newQuantity) {
+        this.quantity = newQuantity;
+    }
+
     public int getTotal() {
         return total;
+    }
+
+    public MineralType getType() {
+        return mineralType;
+    }
+
+    public void setRobot(Robot robot) {
+        matrice[1][0] = 'R';
+        matrice[1][1] = (char) ('0' + robot.getNumber());
+    }
+
+    public int getNumber() {
+        return this.number;
     }
 }

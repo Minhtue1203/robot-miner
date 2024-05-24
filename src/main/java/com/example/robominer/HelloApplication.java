@@ -24,7 +24,7 @@ public class HelloApplication {
             System.out.println("Robot " + (controller.getCurrentRobotIndex() + 1) + " à déplacer.");
             boolean validMove = false;
             while (!validMove) {
-                System.out.println("Entrez une commande (z = haut, s = bas, q = gauche, d = droite, w = quitter) :");
+                System.out.println("Entrez une commande (z = haut, s = bas, q = gauche, d = droite, r = récolter, w = quitter) :");
                 String command = scanner.nextLine();
                 if (command.equals("w")) {
                     return; // quitter l'application
@@ -42,6 +42,9 @@ public class HelloApplication {
                         break;
                     case "d":
                         validMove = controller.moveRobotRight();
+                        break;
+                    case "r":
+                        validMove = controller.harvestResources();
                         break;
                     default:
                         System.out.println("Commande inconnue. Utilisez z, s, q, d pour déplacer le robot, w pour quitter.");

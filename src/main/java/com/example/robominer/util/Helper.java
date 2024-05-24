@@ -5,11 +5,11 @@ public class Helper {
     public static Random random = new Random();
 
     public static int generateCapacityStorage() {
-        return 5 + random.nextInt(11);
+        return 5 + random.nextInt(5);
     }
 
     public static int generateCapacityExtraction() {
-        return 1 + random.nextInt(4);
+        return 1 + random.nextInt(3);
     }
 
     public static int generateMineQuantity() {

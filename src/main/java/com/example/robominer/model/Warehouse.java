@@ -24,4 +24,9 @@ public class Warehouse extends Secteur {
     public int getStock() {
         return stock;
     }
+
+    public void setRobot(Robot robot) {
+        matrice[1][0] = 'E';
+        matrice[1][1] = (char) ('0' + robot.getNumber());
+    }
 }

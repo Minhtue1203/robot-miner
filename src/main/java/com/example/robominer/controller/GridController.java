@@ -111,21 +111,29 @@ public class GridController {
     public boolean moveRobot(int[] robotPosition, int newRow, int newCol) {
         int robotRow = robotPosition[0];
         int robotCol = robotPosition[1];
-        if (newRow >= 0 && newRow < grid.getRows() && newCol >= 0 && newCol < grid.getCols() && grid.isEmpty(newRow, newCol)) {
-            Secteur cible = grid.getSecteur(newRow, newCol);
-            if(cible instanceof Empty) {
+        if (newRow >= 0 && newRow < grid.getRows() && newCol >= 0 && newCol < grid.getCols()) {
+            Secteur target = grid.getSecteur(newRow, newCol);
+            if(target instanceof Empty || target instanceof Mine || target instanceof Warehouse) {
                 grid.setSecteur(robotRow, robotCol, new Empty());
                 robotPosition[0] = newRow;
                 robotPosition[1] = newCol;
-                System.out.println(getCurrentRobot().getNumber());
-                grid.setSecteur(newRow, newCol, getCurrentRobot());
+                if (target instanceof Mine) {
+                    Mine mine = (Mine) target;
+                    mine.setRobot(getCurrentRobot());
+                    grid.setSecteur(newRow, newCol, mine);
+                } else if (target instanceof Warehouse) {
+                    Warehouse warehouse = (Warehouse) target;
+                    warehouse.setRobot(getCurrentRobot());
+                    grid.setSecteur(newRow, newCol, warehouse);
+                } else {
+                    grid.setSecteur(newRow, newCol, getCurrentRobot());
+                }
                 updateAddedSecteurs(robotRow, robotCol, newRow, newCol);
                 return true;
-            } else if (cible instanceof Water) {
+            } else if (target instanceof Water) {
                 System.out.println("Le robot ne peut pas se déplacer dans l'eau.");
             }
         }
-
         return false;
     }
 
@@ -169,6 +177,29 @@ public class GridController {
 
     public int getCurrentRobotIndex() {
         return currentRobotIndex;
+    }
+
+    public boolean harvestResources() {
+        int[] robotPosition = robotPositions.get(currentRobotIndex);
+        Secteur secteur = grid.getSecteur(robotPosition[0], robotPosition[1]);
+        if (secteur instanceof Mine) {
+            Mine mine = (Mine) secteur;
+            Robot robot = getCurrentRobot();
+            if (robot.getMineralType() == mine.getMineralType()) {
+                int harvested = Math.min(robot.getCapacityExtraction(), mine.getQuantity());
+                mine.setQuantity(mine.getQuantity() - harvested);
+                System.out.println("Robot " + robot.getNumber() + " a récolté " + harvested + " unités de " + mine.getType());
+                if (mine.getQuantity() == 0) {
+                    System.out.println("La mine " + mine.getNumber() + " est épuisée.");
+                }
+                return true;
+            } else {
+                System.out.println("Le robot n'est pas le même type de la mine. Vous ne pouvez pas récolter.");
+            }
+        } else {
+            System.out.println("Le robot n'est pas dans une mine.");
+        }
+        return false;
     }
 
     public void updateView() {

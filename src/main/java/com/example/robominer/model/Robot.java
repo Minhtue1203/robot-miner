@@ -19,12 +19,8 @@ public class Robot extends Secteur {
         this.number = number;
     }
 
-    public void move(String direction) {
-        // Logique pour avancer
-    }
-
-    public void harvest() {
-        // Logique pour récolter
+    public void harvest(int amountCollected) {
+        this.stockActuel = this.stockActuel + amountCollected;
     }
 
     public void deposit() {
