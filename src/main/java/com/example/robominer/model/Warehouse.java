@@ -1,18 +1,20 @@
 package com.example.robominer.model;
 
 import com.example.robominer.util.MineralType;
+import javafx.scene.paint.Color;
 
 public class Warehouse extends Secteur {
     private MineralType mineralType;
     private int storedResources;
     private int number;
-
+    private Color color;
     public Warehouse(int warehouseNumber, MineralType mineralType) {
         matrice[0][0] = 'E';
         matrice[0][1] = (char) ('0' + warehouseNumber);
         this.mineralType = mineralType;
         this.storedResources = 0;
         this.number = warehouseNumber;
+        this.color = getColorMineral(mineralType);
     }
 
     public void addResources(int amount) {
@@ -39,5 +41,17 @@ public class Warehouse extends Secteur {
 
     public int getNumber() {
         return number;
+    }
+
+    public Color getColor() {
+        return color;
+    }
+
+    public Color getColorMineral(MineralType mineralType) {
+        if(mineralType.equals(MineralType.GOLD)) {
+            return Color.ORANGE;
+        } else {
+            return Color.BLACK;
+        }
     }
 }
