@@ -281,5 +281,6 @@ public class GridController {
 
     public void nextRobot() {
         currentRobotIndex = (currentRobotIndex + 1) % robotPositions.size();
+        System.out.println("C'est le tour du Robot " + getCurrentRobot().getNumber());
     }
 }
