@@ -265,10 +265,17 @@ public class GridController {
         }
     }
 
-    public void updateView() {
-        view.printGrid(grid);
-        System.out.println();
-        System.out.println();
+//    public void updateView() {
+//        view.printGrid(grid);
+//        System.out.println();
+//        System.out.println();
+//        secteurInfoView.printSecteurInfo(addedSecteurs);
+//    }
+    public Grid getGrid() {
+        return grid;
+    }
+
+    public void updateGridConsole() {
         secteurInfoView.printSecteurInfo(addedSecteurs);
     }
 

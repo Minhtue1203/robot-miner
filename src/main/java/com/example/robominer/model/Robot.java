@@ -1,6 +1,9 @@
 package com.example.robominer.model;
 
 import com.example.robominer.util.MineralType;
+import javafx.scene.paint.Color;
+
+import java.util.Random;
 
 public class Robot extends Secteur {
     private int number;
@@ -8,6 +11,8 @@ public class Robot extends Secteur {
     private int capacityStorage;
     private int capacityExtraction;
     private int currentStorage;
+    private Color color;
+    private Random rand = new Random();
 
     public Robot(int number, MineralType mineralType, int capacityStorage, int capacityExtraction) {
         matrice[1][0] = 'R';
@@ -17,6 +22,7 @@ public class Robot extends Secteur {
         this.currentStorage = 0;
         this.mineralType = mineralType;
         this.number = number;
+        this.color = Color.rgb(rand.nextInt(256), rand.nextInt(256), rand.nextInt(256));
     }
 
     public void addStorage(int amount) {
@@ -25,10 +31,6 @@ public class Robot extends Secteur {
 
     public boolean hasStorageSpace() {
         return this.currentStorage < this.capacityStorage;
-    }
-
-    public void deposit() {
-        // Logique pour déposer
     }
 
     public MineralType getMineralType() {
@@ -45,6 +47,10 @@ public class Robot extends Secteur {
 
     public int getNumber() {
         return number;
+    }
+
+    public Color getColor() {
+        return color;
     }
 
     public int getCurrentStorage() {

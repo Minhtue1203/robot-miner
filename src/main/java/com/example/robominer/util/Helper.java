@@ -1,5 +1,9 @@
 package com.example.robominer.util;
+import com.example.robominer.model.Mine;
+
+import java.awt.*;
 import java.util.Random;
+import javafx.scene.paint.Color;
 
 public class Helper {
     public static Random random = new Random();
@@ -21,6 +25,14 @@ public class Helper {
             return MineralType.NICKEL;
         } else {
             return MineralType.GOLD;
+        }
+    }
+
+    public static Color getColorMine(Mine mine) {
+        if(mine.getMineralType().equals(MineralType.GOLD)) {
+            return Color.YELLOW;
+        } else {
+            return Color.GRAY;
         }
     }
 }
