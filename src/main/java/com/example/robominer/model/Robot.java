@@ -30,12 +30,17 @@ public class Robot extends Secteur {
     }
 
     private void initColors () {
-        // Add colors to the list
+        // Add colors to the list. Max 10 robots
         robotColors.add(Color.rgb(107, 62, 38));
         robotColors.add(Color.rgb(255, 197, 217));
         robotColors.add(Color.rgb(194, 242, 208));
         robotColors.add(Color.rgb(253, 245, 201));
         robotColors.add(Color.rgb(255, 203, 133));
+        robotColors.add(Color.rgb(0,174,219));
+        robotColors.add(Color.rgb(162,0,255));
+        robotColors.add(Color.rgb(244,120,53));
+        robotColors.add(Color.rgb(212,18,67));
+        robotColors.add(Color.rgb(142,193,39));
     }
 
     public void addStorage(int amount) {
