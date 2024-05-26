@@ -6,6 +6,7 @@ import com.example.robominer.util.Helper;
 
 import com.example.robominer.util.MineralType;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -125,15 +126,15 @@ public class GridView extends Application {
         return label;
     }
 
-//    public void printGrid(Grid grille) {
-//        for (int i = 0; i < grille.getRows(); i++) {
-//            for (int row = 0; row < 2; row++) {
-//                for (int j = 0; j < grille.getCols(); j++) {
-//                    char[][] matrice = grille.getSecteur(i, j).getMatrice();
-//                    System.out.print(matrice[row][0] + " " + matrice[row][1] + " ");
-//                }
-//                System.out.println();
-//            }
-//        }
-//    }
+    public void printGrid(Grid grille) {
+        for (int i = 0; i < grille.getRows(); i++) {
+            for (int row = 0; row < 2; row++) {
+                for (int j = 0; j < grille.getCols(); j++) {
+                    char[][] matrice = grille.getSecteur(i, j).getMatrice();
+                    System.out.print(matrice[row][0] + " " + matrice[row][1] + " ");
+                }
+                System.out.println();
+            }
+        }
+    }
 }

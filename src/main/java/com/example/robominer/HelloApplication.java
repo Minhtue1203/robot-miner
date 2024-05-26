@@ -4,7 +4,10 @@ import com.example.robominer.controller.GridController;
 import com.example.robominer.model.Grid;
 import com.example.robominer.view.GridView;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.stage.Stage;
+
+import java.util.Random;
 
 public class HelloApplication extends Application {
     public static void main(String[] args) {
@@ -13,13 +16,13 @@ public class HelloApplication extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        Grid grille = new Grid();
+        Grid grid = new Grid();
         GridView view = new GridView();
-        GridController controller = new GridController(grille, view);
+        GridController controller = new GridController(grid, view);
         view.setController(controller);
-
-        controller.addRandomWater(3); // Ajouter 3 plans d'eau
-        controller.addRandomMine(3); // Ajouter 3 mines avec des numéros uniques
+        Random random = new Random();
+        controller.addRandomWater( 1 + random.nextInt(9)); // Ajouter 3 plans d'eau
+        controller.addRandomMine(2 + random.nextInt(2)); // Ajouter 3 mines avec des numéros uniques
         controller.addRandomWarehouse(2); // Ajouter 2 entrepôts avec des numéros uniques
         controller.addRandomRobot(2);
 
@@ -28,6 +31,7 @@ public class HelloApplication extends Application {
 
         view.getScene().setOnKeyPressed(event -> {
             boolean validMove = false;
+            System.out.println("Entrez une commande (z = haut, s = bas, q = gauche, d = droite, r = récolter, f = déposer, w = quitter) :");
             switch (event.getCode()) {
                 case Z:
                     validMove = controller.moveRobotUp();
@@ -46,6 +50,9 @@ public class HelloApplication extends Application {
                     break;
                 case F:
                     validMove = controller.depositResources();
+                    break;
+                case W:
+                    Platform.exit();
                     break;
                 default:
                     break;
