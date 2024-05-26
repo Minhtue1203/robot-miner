@@ -6,7 +6,7 @@
 - JDK 21
 - Junit
 
-## Lancer l'application :play_or_pause_button:
+## Lancer l'application :rocket:
 
 ## Description de l'application de jeu :book:
 
