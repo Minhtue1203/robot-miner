@@ -1,30 +1,31 @@
-# Robot miner
+# Robot miner :robot:
 
-## Developpement Environnement
+## Developpement Environnement 
 - JavaFx
 - Maven 3.9.1
 - JDK 21
 - Junit
-### Description de l'application de jeu :
+
+## Description de l'application de jeu
+
+### Contrôles du jeu
+
+Utilisez le clavier pour contrôler les robots :
+
+[<kbd><br>Z<br></kbd>][Link] : Aller en haut :arrow_up:
+
+[<kbd><br>S<br></kbd>][Link] : Aller en bas :arrow_down:
+
+[<kbd><br>Q<br></kbd>][Link] : Aller à droite :arrow_right:
+
+[<kbd><br>D<br></kbd>][Link] : Aller à gauche :arrow_left:
+
+[<kbd><br>F<br></kbd>][Link] : Déposer les ressources dans l'entrepôt :house:
+
+[<kbd><br>R<br></kbd>][Link] : Récolter des ressources dans la mine :pick:
 
 
--Contrôles du jeu : Utilisez le clavier pour contrôler les robots :
-
-q : Aller à gauche.
-
-s : Aller en bas.
-
-z : Aller en haut.
-
-d : Aller à droite.
-
-f : Déposer les ressources dans l'entrepôt.
-
-r : Récolter des ressources dans la mine.
-
-
-
--Déplacement et actions :
+Déplacement et actions :
 
 Lorsque le robot entre dans une mine, il "disparaît" visuellement de la grille dans le mode graphique, mais reste visible dans le mode console.
 Le tour de chaque robot est affiché en haut de l'application.
