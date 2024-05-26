@@ -21,8 +21,12 @@
 La position de chaque objet (eau, mines, entrepôts, robots) est gérée de manière aléatoire et change à chaque fois que le jeu est relancé.
 
 ### Restrictions de déplacement :stop_sign:
-Les robots ne peuvent pas se déplacer sur des cases d'eau.
+Les robots ne peuvent pas se déplacer sur des cases d'eau. 
+
 Chaque robot ne peut effectuer qu'une seule action par tour.
+- Déplacement
+- Récolte
+- Déposer
 
 ### Contrôles du jeu :runner:
 
