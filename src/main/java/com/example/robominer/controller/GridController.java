@@ -265,14 +265,22 @@ public class GridController {
         }
     }
 
-    public void updateView() {
+//    public void updateViewConsole() {
+//        view.printGrid(grid);
+//    }
+
+    public Grid getGrid() {
+        return grid;
+    }
+
+    public void updateGridConsole() {
         view.printGrid(grid);
-        System.out.println();
         System.out.println();
         secteurInfoView.printSecteurInfo(addedSecteurs);
     }
 
     public void nextRobot() {
         currentRobotIndex = (currentRobotIndex + 1) % robotPositions.size();
+        System.out.println("C'est le tour du Robot " + getCurrentRobot().getNumber());
     }
 }
