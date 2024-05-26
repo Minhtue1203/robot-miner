@@ -16,9 +16,9 @@ public class HelloApplication extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        Grid grille = new Grid();
+        Grid grid = new Grid();
         GridView view = new GridView();
-        GridController controller = new GridController(grille, view);
+        GridController controller = new GridController(grid, view);
         view.setController(controller);
         Random random = new Random();
         controller.addRandomWater( 1 + random.nextInt(9)); // Ajouter 3 plans d'eau
