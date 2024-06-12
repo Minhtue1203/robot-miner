@@ -2,11 +2,8 @@ package com.example.robominer.view;
 
 import com.example.robominer.controller.GridController;
 import com.example.robominer.model.*;
-import com.example.robominer.util.Helper;
-
 import com.example.robominer.util.MineralType;
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -74,7 +71,7 @@ public class GridView extends Application {
                 } else if (secteur instanceof Mine) {
                     Mine mine = (Mine) secteur;
                     color = mine.getColor();
-            } else if (secteur instanceof Robot) {
+                } else if (secteur instanceof Robot) {
                     Robot robot = (Robot) secteur;
                     color = robot.getColor();
                 } else {
@@ -85,10 +82,10 @@ public class GridView extends Application {
                 gridPane.add(stackPane, col, row);
             }
         }
-//        updateRobotTurnLabel();
+        updateRobotTurnLabel();
     }
 
-    private void initRobotTurnLabel () {
+    private void initRobotTurnLabel() {
         robotTurnLabel = new Label();
         robotTurnLabel.setFont(Font.font("Arial", FontWeight.BOLD, 24));
         robotTurnLabel.setTextAlignment(TextAlignment.CENTER);

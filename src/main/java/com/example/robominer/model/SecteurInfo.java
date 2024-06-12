@@ -3,9 +3,6 @@ package com.example.robominer.model;
 import com.example.robominer.util.MineralType;
 import com.example.robominer.util.SecteurType;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class SecteurInfo {
     private SecteurType type;
     private int number;
@@ -64,6 +61,10 @@ public class SecteurInfo {
 
     public void setCurrentStock(int newStock) {
         this.currentStock = newStock;
+    }
+
+    public int getCurrentStock() {
+        return currentStock;
     }
 
     public int getNumber() {
