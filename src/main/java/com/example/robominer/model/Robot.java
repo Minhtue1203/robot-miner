@@ -2,6 +2,7 @@ package com.example.robominer.model;
 
 import com.example.robominer.util.Helper;
 import com.example.robominer.util.MineralType;
+import com.example.robominer.util.StatusRobotType;
 import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
@@ -16,8 +17,10 @@ public class Robot extends Secteur {
     private Color color;
     private Random rand = new Random();
     private static ArrayList<Color> robotColors = new ArrayList<>();
-
-    public Robot(int number, MineralType mineralType, int capacityStorage, int capacityExtraction) {
+    private int x;
+    private int y;
+    private StatusRobotType status;
+    public Robot(int x, int y, int number, MineralType mineralType, int capacityStorage, int capacityExtraction) {
         matrice[1][0] = 'R';
         matrice[1][1] = (char) ('0' + number);
         this.capacityStorage = capacityStorage;
@@ -27,6 +30,9 @@ public class Robot extends Secteur {
         this.number = number;
         initColors();
         this.color = robotColors.get(number);
+        this.x = x;
+        this.y = y;
+        this.status = StatusRobotType.FINDING;
     }
 
     private void initColors () {
@@ -41,6 +47,14 @@ public class Robot extends Secteur {
         robotColors.add(Color.rgb(244,120,53));
         robotColors.add(Color.rgb(212,18,67));
         robotColors.add(Color.rgb(142,193,39));
+    }
+
+    public void setStatus(StatusRobotType newState) {
+        this.status = newState;
+    }
+
+    public StatusRobotType getStatus() {
+        return this.status;
     }
 
     public void addStorage(int amount) {
@@ -75,7 +89,44 @@ public class Robot extends Secteur {
         return currentStorage;
     }
 
+    public int getX() {
+        return this.x;
+    }
+
+    public int getY() {
+        return this.y;
+    }
+
+    public int [] getCurrentPosition() {
+        return new int[]{ this.x, this.y };
+    }
+
     public void setCurrentStorage(int currentStorage) {
         this.currentStorage = currentStorage;
+    }
+
+    public void updatePosition(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public void setY(int y) {
+        this.y = y;
+    }
+
+    public boolean isMining() {
+        return this.status == StatusRobotType.MINING;
+    }
+
+    public boolean isFinding() {
+        return this.status == StatusRobotType.FINDING;
+    }
+
+    public boolean isDepositing() {
+        return this.status == StatusRobotType.DEPOSITING;
     }
 }

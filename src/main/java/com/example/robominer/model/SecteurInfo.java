@@ -69,4 +69,5 @@ public class SecteurInfo {
     public int getNumber() {
         return this.number;
     }
+
 }

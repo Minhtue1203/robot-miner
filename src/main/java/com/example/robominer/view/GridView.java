@@ -5,11 +5,13 @@ import com.example.robominer.model.*;
 import com.example.robominer.util.Helper;
 
 import com.example.robominer.util.MineralType;
+import com.example.robominer.util.StatusRobotType;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -19,16 +21,26 @@ import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import javafx.scene.control.Label;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
 public class GridView extends Application {
     private GridController controller;
     private GridPane gridPane;
     private static final int SECTEUR_SIZE = 50;
     private Scene scene;
     private Label robotTurnLabel;
-
+    private int currentRobotIndex = 0;
+    private int currentStepIndex = 0;
     public void setController(GridController controller) {
         this.controller = controller;
     }
+
+    private Map<Integer, List<int[]>> robotPaths;
 
     @Override
     public void start(Stage primaryStage) {
@@ -39,10 +51,12 @@ public class GridView extends Application {
         updateRobotTurnLabel();
         HBox legendBox = createLegend();
         legendBox.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
-
+        Button button = new Button("Start Auto Place Robot");
+        button.setOnAction(event -> startAutoPlaceRobot());
         borderPane.setTop(robotTurnLabel);
         borderPane.setCenter(gridPane);
         borderPane.setBottom(legendBox);
+        borderPane.setRight(button);
 
         scene = new Scene(borderPane, 800, 600);
         primaryStage.setScene(scene);
@@ -52,6 +66,70 @@ public class GridView extends Application {
 
     public Scene getScene() {
         return scene;
+    }
+
+    private ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
+
+    private void startAutoPlaceRobot() {
+        controller.autoPlaceRobot();
+        robotPaths = new HashMap<>();
+        executor = Executors.newScheduledThreadPool(1);
+
+        for (Robot robot : controller.getRobots()) {
+            int id = robot.getNumber();
+            robotPaths.put(id, controller.getPathRobotById(id));
+        }
+        //currentRobotIndex = 0;
+        currentStepIndex = 0;
+        executor.scheduleAtFixedRate(() -> {
+            Platform.runLater(this::simulateAutoRobotMove);
+        }, 0, 2, TimeUnit.SECONDS);
+    }
+
+    private void simulateAutoRobotMove() {
+        Robot currentRobot = controller.getCurrentRobot();
+        List<Robot> robots = controller.getRobots();
+
+        List<int[]> path = robotPaths.get(currentRobot.getNumber());
+
+        if (currentStepIndex < path.size()) {
+            int[] newPos = path.get(currentStepIndex);
+            int[] oldPos = currentRobot.getCurrentPosition();
+            controller.moveRobot(oldPos, newPos[0], newPos[1]);
+        }
+
+        if (currentStepIndex == path.size() - 1) {
+            controller.setRobotStatus(currentRobot.getNumber(), StatusRobotType.MINING);
+        }
+
+        controller.nextRobot();
+        if(controller.getCurrentRobotIndex() == 0) {
+            currentStepIndex ++;
+        }
+
+        controller.updateGridConsole();
+        updateRobotTurnLabel();
+        updateView();
+
+        boolean allPathsCompleted = true;
+        for (Robot robot : robots) {
+            List<int[]> robotPath = robotPaths.get(robot.getNumber());
+            System.out.printf("robot get number: %d", robot.getNumber());
+            if (currentStepIndex < robotPath.size() || robot.isMining()) {
+                allPathsCompleted = false;
+                break;
+            }
+        }
+
+        for (Robot robot : robots) {
+            if (robot.isMining()) {
+                controller.loopHavestResources(robot);
+            }
+        }
+
+        if (allPathsCompleted) {
+            executor.shutdown();
+        }
     }
 
     public void updateView() {
