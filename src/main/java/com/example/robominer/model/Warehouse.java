@@ -8,6 +8,7 @@ public class Warehouse extends Secteur {
     private int storedResources;
     private int number;
     private Color color;
+
     public Warehouse(int warehouseNumber, MineralType mineralType) {
         matrice[0][0] = 'E';
         matrice[0][1] = (char) ('0' + warehouseNumber);

@@ -24,9 +24,9 @@ public class GridController {
     private int robotCounter = 0;
 
     private List<SecteurInfo> addedSecteurs;
-    // private List<int[]> robotPositions;
     private int currentRobotIndex;
     private List<Robot> robots;
+    private List<Mine> mines;
 
     public GridController(Grid grid, GridView view) {
         this.grid = grid;
@@ -37,6 +37,7 @@ public class GridController {
         // this.robotPositions = new ArrayList<>();
         this.currentRobotIndex = 0;
         this.robots = new ArrayList<>();
+        this.mines = new ArrayList<>();
     }
 
     public void addRandomWater(int count) {
@@ -53,7 +54,9 @@ public class GridController {
                 int quantity = generateMineQuantity();
                 mineCounter++;
                 int number = mineCounter;
-                grid.setSecteur(row, col, new Mine(number, type, quantity));
+                Mine mine = new Mine(number, type, quantity);
+                grid.setSecteur(row, col, mine);
+                mines.add(mine);
                 added++;
                 addedSecteurs.add(new SecteurInfo(SecteurType.MINE, number, row, col, type, quantity, quantity));
             }
@@ -69,7 +72,8 @@ public class GridController {
                 MineralType type = generateMineType(warehouseCounter);
                 warehouseCounter++;
                 int number = warehouseCounter;
-                grid.setSecteur(row, col, new Warehouse(number, type));
+                Warehouse warehouse = new Warehouse(number, type);
+                grid.setSecteur(row, col, warehouse);
                 added++;
                 addedSecteurs.add(new SecteurInfo(SecteurType.WAREHOUSE, number, row, col, type, 0));
             }
@@ -280,21 +284,18 @@ public class GridController {
         currentRobotIndex = (currentRobotIndex + 1) % robots.size();
     }
 
-    public int getCurrentRobotIndex () {
-        return currentRobotIndex;
-    }
-
-    public void setRobotStatus(int number, StatusRobotType newStatus) {
-        int index = number - 1;
-        robots.get(index).setStatus(newStatus);
-    }
-
     public void autoPlaceRobotsForMine() {
+        if(isMineExhausted()) {
+            System.out.println("All mine is exhausted. Can't find path");
+            return;
+        }
         AutoMine autoMine = new AutoMine(this.grid);
         for (Robot robot : robots) {
             if (robot.getStatus() == StatusRobotType.FINDING) {
                 List<int[]> path = autoMine.findPathToNearestMine(robot);
-                path.removeFirst();
+                if(path.size() > 0) {
+                    path.removeFirst();
+                }
                 robot.setRobotPaths(path);
                 robot.setCurrentIndexPath(0);
             }
@@ -313,13 +314,22 @@ public class GridController {
         }
     }
 
+    public boolean isMineExhausted() {
+        boolean isExhausted = true;
+        for (Mine mine: mines) {
+            if(mine.getQuantity() > 0) {
+                return false;
+            }
+        }
+        return isExhausted;
+    }
+
     public void loopHavestResources(Robot robot) {
         int[] robotPosition = robot.getCurrentPosition();
         Secteur secteur = grid.getSecteur(robotPosition[0], robotPosition[1]);
 
         if(!(secteur instanceof Mine)) {
-            System.out.println("Le robot n'est pas dans une mine.");
-            // autoPlaceRobotsForWarehouse();
+            System.out.printf("Le robot n'est pas dans une mine: %d %d%n", robotPosition[0], robotPosition[1]);
             return;
         }
 
@@ -327,37 +337,41 @@ public class GridController {
 
         if (robot.getMineralType() != mine.getMineralType()) {
             System.out.println("Le robot n'est pas le même type de la mine. Vous ne pouvez pas récolter.");
+            return;
         }
 
         if (robot.getCurrentStorage() == robot.getCapacityStorage()) {
             System.out.println("Le robot est plein");
-//            int index = robot.getNumber() - 1;
-//            robots.get(index).setStatus(StatusRobotType.DEPOSITING);
-//            autoPlaceRobotsForDeposit();
             switchRobotFor(robot, StatusRobotType.DEPOSITING);
+            updateSecteurInfoAfterHarvest(robot.getNumber(), mine.getNumber(), robot.getCurrentStorage(), mine.getQuantity());
             return;
         }
 
         int availableSpace = robot.getCapacityStorage() - robot.getCurrentStorage();
         int possibleExtraction = Math.min(robot.getCapacityExtraction(), mine.getQuantity());
         int actualExtraction = Math.min(possibleExtraction, availableSpace);
+        int remainingQuality = mine.getQuantity() - actualExtraction;
         mine.setQuantity(mine.getQuantity() - actualExtraction);
         robot.addStorage(actualExtraction);
-
+        mines.get(mine.getNumber()-1).setQuantity(remainingQuality);
         System.out.println("Robot " + robot.getNumber() + " a récolté " + actualExtraction + " unités de " + mine.getType());
 
         if (mine.isEmpty()) {
             System.out.println("La mine " + mine.getNumber() + " est épuisée.");
+            grid.setSecteur(robotPosition[0], robotPosition[1], robot);
+            switchRobotFor(robot, StatusRobotType.DEPOSITING);
+            updateSecteurInfoAfterHarvest(robot.getNumber(), mine.getNumber(), robot.getCurrentStorage(), mine.getQuantity());
+            return;
         }
-
         updateSecteurInfoAfterHarvest(robot.getNumber(), mine.getNumber(), robot.getCurrentStorage(), mine.getQuantity());
     }
 
     public void loopDepositResources(Robot robot) {
+        System.out.println("loopDepositResources");
         int[] robotPosition = robot.getCurrentPosition();
         Secteur secteur = grid.getSecteur(robotPosition[0], robotPosition[1]);
         if(!(secteur instanceof Warehouse)) {
-            System.out.println("Le robot n'est pas dans une mine.");
+            System.out.println("Le robot n'est pas dans une warehouse.");
             return;
         }
         Warehouse warehouse = (Warehouse) secteur;
@@ -369,13 +383,11 @@ public class GridController {
 
         int storedAmount = robot.getCurrentStorage();
         warehouse.addResources(storedAmount);
+
         robot.setCurrentStorage(0);
         System.out.println("Robot " + robot.getNumber() + " a déposé " + storedAmount + " unités de ressources dans l'entrepôt " + warehouse.getNumber());
-//        int index = robot.getNumber() - 1;
-//        robots.get(index).setStatus(StatusRobotType.FINDING);
-//        autoPlaceRobotsForMine();
         switchRobotFor(robot, StatusRobotType.FINDING);
-        updateSecteurInfoAfterDeposit(robotPosition[0], robotPosition[1], robot.getNumber(), warehouse.getNumber(), storedAmount);
+        updateSecteurInfoAfterDeposit(robotPosition[0], robotPosition[1], robot.getNumber(), warehouse.getNumber(), warehouse.getStoredResources());
     }
 
     private void switchRobotFor(Robot robot, StatusRobotType type) {
@@ -386,6 +398,5 @@ public class GridController {
         } else if (type == StatusRobotType.DEPOSITING) {
             autoPlaceRobotsForDeposit();
         }
-
     }
 }
