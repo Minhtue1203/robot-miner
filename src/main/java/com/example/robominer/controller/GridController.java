@@ -16,7 +16,7 @@ public class GridController {
     private GridView view;
     private SecteurInfoView secteurInfoView;
     private Random random;
-    // private Map<Integer, List<int[]>> miningPaths;
+
     private Map<Integer, List<int[]>> depositPaths;
 
     private int mineCounter = 0;
@@ -270,17 +270,9 @@ public class GridController {
         return addedSecteurs;
     }
 
-    //    public Map<Integer, List<int[]>> getMiningPaths() {
-//        return miningPaths;
-//    }
-
     public List<Robot> getRobots() {
         return robots;
     }
-
-//    public List<int[]> getMiningById(int robotId) {
-//        return miningPaths.get(robotId);
-//    }
 
     public void nextRobot() {
         // currentRobotIndex = (currentRobotIndex + 1) % robotPositions.size();
