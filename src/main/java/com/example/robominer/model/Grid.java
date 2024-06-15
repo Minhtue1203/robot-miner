@@ -2,15 +2,19 @@ package com.example.robominer.model;
 
 public class Grid {
     private Secteur[][] secteurs;
+    private int SIZE = 10;
 
     public Grid() {
         // Initialiser une grille 10x10 de secteurs
-        secteurs = new Secteur[10][10];
-        for (int i = 0; i < 10; i++) {
-            for (int j = 0; j < 10; j++) {
+        secteurs = new Secteur[SIZE][SIZE];
+        for (int i = 0; i < SIZE; i++) {
+            for (int j = 0; j < SIZE; j++) {
                 secteurs[i][j] = new Empty();
             }
         }
+    }
+    public int getSize() {
+        return this.SIZE;
     }
 
     public void setSecteur(int row, int col, Secteur secteur) {

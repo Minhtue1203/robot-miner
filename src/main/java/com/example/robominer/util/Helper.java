@@ -5,6 +5,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.Random;
 
+import com.example.robominer.model.Robot;
 import com.example.robominer.model.Warehouse;
 import javafx.scene.paint.Color;
 
