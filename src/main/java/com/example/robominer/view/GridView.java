@@ -12,6 +12,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.TextArea;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -34,13 +35,11 @@ public class GridView extends Application {
     private static final int SECTEUR_SIZE = 50;
     private Scene scene;
     private Label robotTurnLabel;
-    private int currentRobotIndex = 0;
-    private int currentStepIndex = 0;
+    private TextArea logs;
+
     public void setController(GridController controller) {
         this.controller = controller;
     }
-
-    private Map<Integer, List<int[]>> robotPaths;
 
     @Override
     public void start(Stage primaryStage) {
@@ -49,15 +48,23 @@ public class GridView extends Application {
         gridPane = new GridPane();
         initRobotTurnLabel();
         updateRobotTurnLabel();
+
         HBox legendBox = createLegend();
         legendBox.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
+
         Button button = new Button("Start Auto Place Robot");
         button.setOnAction(event -> startAutoPlaceRobot());
+        logs = new TextArea();
+        logs.setEditable(false);
+
+        VBox rightPane = new VBox(10); // 10 is the spacing between elements
+        rightPane.getChildren().addAll(button, logs);
+
         borderPane.setTop(robotTurnLabel);
         borderPane.setCenter(gridPane);
         borderPane.setBottom(legendBox);
-        borderPane.setRight(button);
-
+        borderPane.setRight(rightPane);
+        updateLogs();
         scene = new Scene(borderPane, 800, 600);
         primaryStage.setScene(scene);
         primaryStage.show();
@@ -71,65 +78,38 @@ public class GridView extends Application {
     private ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
 
     private void startAutoPlaceRobot() {
-        controller.autoPlaceRobot();
-        robotPaths = new HashMap<>();
+        controller.autoPlaceRobotsForMine();
         executor = Executors.newScheduledThreadPool(1);
-
-        for (Robot robot : controller.getRobots()) {
-            int id = robot.getNumber();
-            robotPaths.put(id, controller.getPathRobotById(id));
-        }
-        //currentRobotIndex = 0;
-        currentStepIndex = 0;
         executor.scheduleAtFixedRate(() -> {
             Platform.runLater(this::simulateAutoRobotMove);
-        }, 0, 2, TimeUnit.SECONDS);
+        }, 0, 1, TimeUnit.SECONDS);
     }
 
     private void simulateAutoRobotMove() {
         Robot currentRobot = controller.getCurrentRobot();
-        List<Robot> robots = controller.getRobots();
+        List<int[]> path = currentRobot.getRobotPaths();
+        int currentIndex = currentRobot.getCurrentIndexPath();
 
-        List<int[]> path = robotPaths.get(currentRobot.getNumber());
-
-        if (currentStepIndex < path.size()) {
-            int[] newPos = path.get(currentStepIndex);
+        if (currentIndex < path.size()) {
+            int[] newPos = path.get(currentIndex);
             int[] oldPos = currentRobot.getCurrentPosition();
             controller.moveRobot(oldPos, newPos[0], newPos[1]);
+            currentIndex++;
+            currentRobot.setCurrentIndexPath(currentIndex);
+        } else {
+            if(currentRobot.isFinding()) {
+                // currentRobot.setStatus(StatusRobotType.MINING);
+                controller.loopHavestResources(currentRobot);
+            } else if (currentRobot.isDepositing()) {
+                controller.loopDepositResources(currentRobot);
+                //System.out.println("Robot is depositing");
+            }
         }
-
-        if (currentStepIndex == path.size() - 1) {
-            controller.setRobotStatus(currentRobot.getNumber(), StatusRobotType.MINING);
-        }
-
-        controller.nextRobot();
-        if(controller.getCurrentRobotIndex() == 0) {
-            currentStepIndex ++;
-        }
-
-        controller.updateGridConsole();
         updateRobotTurnLabel();
+        controller.nextRobot();
+        controller.updateGridConsole();
+        updateLogs();
         updateView();
-
-        boolean allPathsCompleted = true;
-        for (Robot robot : robots) {
-            List<int[]> robotPath = robotPaths.get(robot.getNumber());
-            System.out.printf("robot get number: %d", robot.getNumber());
-            if (currentStepIndex < robotPath.size() || robot.isMining()) {
-                allPathsCompleted = false;
-                break;
-            }
-        }
-
-        for (Robot robot : robots) {
-            if (robot.isMining()) {
-                controller.loopHavestResources(robot);
-            }
-        }
-
-        if (allPathsCompleted) {
-            executor.shutdown();
-        }
     }
 
     public void updateView() {
@@ -202,6 +182,14 @@ public class GridView extends Application {
         label.setTextFill(color);
         label.setFont(Font.font("Arial", FontWeight.BOLD, 18));
         return label;
+    }
+
+    public void updateLogs() {
+        List<SecteurInfo> addedSecteurs = controller.getAddedSecteurs();
+        for (SecteurInfo secteurInfo : addedSecteurs) {
+            String messages = secteurInfo.toString();
+            logs.appendText(messages + "\n");
+        }
     }
 
     public void printGrid(Grid grille) {

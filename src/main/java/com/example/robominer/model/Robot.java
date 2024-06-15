@@ -5,8 +5,7 @@ import com.example.robominer.util.MineralType;
 import com.example.robominer.util.StatusRobotType;
 import javafx.scene.paint.Color;
 
-import java.util.ArrayList;
-import java.util.Random;
+import java.util.*;
 
 public class Robot extends Secteur {
     private int number;
@@ -20,6 +19,9 @@ public class Robot extends Secteur {
     private int x;
     private int y;
     private StatusRobotType status;
+    private List<int[]> robotPaths;
+    private int currentIndexPath;
+
     public Robot(int x, int y, int number, MineralType mineralType, int capacityStorage, int capacityExtraction) {
         matrice[1][0] = 'R';
         matrice[1][1] = (char) ('0' + number);
@@ -33,6 +35,13 @@ public class Robot extends Secteur {
         this.x = x;
         this.y = y;
         this.status = StatusRobotType.FINDING;
+        this.robotPaths = new ArrayList<>();
+        this.currentIndexPath = 0;
+    }
+
+    private void resetRobotPaths () {
+        this.robotPaths = new ArrayList<>();
+        this.currentIndexPath = 0;
     }
 
     private void initColors () {
@@ -128,5 +137,21 @@ public class Robot extends Secteur {
 
     public boolean isDepositing() {
         return this.status == StatusRobotType.DEPOSITING;
+    }
+
+    public List<int[]> getRobotPaths() {
+        return robotPaths;
+    }
+
+    public void setRobotPaths(List<int[]> robotPaths) {
+        this.robotPaths = robotPaths;
+    }
+
+    public void setCurrentIndexPath(int newValue) {
+        this.currentIndexPath = newValue;
+    }
+
+    public int getCurrentIndexPath() {
+        return currentIndexPath;
     }
 }
