@@ -3,8 +3,10 @@ import com.example.robominer.model.Mine;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
+import com.example.robominer.model.Robot;
 import com.example.robominer.model.Warehouse;
 import javafx.scene.paint.Color;
 
@@ -29,5 +31,15 @@ public class Helper {
         } else {
             return MineralType.GOLD;
         }
+    }
+
+    public static boolean isAllFindingStatus(List<Robot> robots) {
+        boolean isAllFinding = true;
+        for(Robot robot: robots) {
+                if(!robot.isFinding()) {
+                   return false;
+                }
+        }
+        return isAllFinding;
     }
 }

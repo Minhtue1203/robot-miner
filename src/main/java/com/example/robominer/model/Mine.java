@@ -20,15 +20,6 @@ public class Mine extends Secteur {
         this.number = number;
     }
 
-    public void extract(int quantity) {
-        if (this.quantity >= quantity) {
-            this.quantity -= quantity;
-        } else {
-            quantity = this.quantity;
-            this.quantity = 0;
-        }
-    }
-
     public Color getColorMineralType(MineralType mineralType) {
         if(mineralType.equals(MineralType.GOLD)) {
             return Color.YELLOW;
@@ -79,6 +70,6 @@ public class Mine extends Secteur {
     }
 
     public boolean isEmpty () {
-        return this.quantity == 0;
+        return this.quantity <= 0;
     }
 }

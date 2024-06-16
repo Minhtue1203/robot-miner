@@ -5,11 +5,14 @@ import com.example.robominer.model.*;
 import com.example.robominer.util.Helper;
 
 import com.example.robominer.util.MineralType;
+import com.example.robominer.util.StatusRobotType;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextArea;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -19,12 +22,22 @@ import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import javafx.scene.control.Label;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
+import static com.example.robominer.util.Helper.isAllFindingStatus;
+
 public class GridView extends Application {
     private GridController controller;
     private GridPane gridPane;
     private static final int SECTEUR_SIZE = 50;
     private Scene scene;
     private Label robotTurnLabel;
+    private TextArea logs;
 
     public void setController(GridController controller) {
         this.controller = controller;
@@ -37,13 +50,23 @@ public class GridView extends Application {
         gridPane = new GridPane();
         initRobotTurnLabel();
         updateRobotTurnLabel();
+
         HBox legendBox = createLegend();
         legendBox.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
+
+        Button button = new Button("Start Auto Place Robot");
+        button.setOnAction(event -> startAutoPlaceRobot());
+        logs = new TextArea();
+        logs.setEditable(false);
+
+        VBox rightPane = new VBox(10); // 10 is the spacing between elements
+        rightPane.getChildren().addAll(button, logs);
 
         borderPane.setTop(robotTurnLabel);
         borderPane.setCenter(gridPane);
         borderPane.setBottom(legendBox);
-
+        borderPane.setRight(rightPane);
+        updateLogs();
         scene = new Scene(borderPane, 800, 600);
         primaryStage.setScene(scene);
         primaryStage.show();
@@ -52,6 +75,54 @@ public class GridView extends Application {
 
     public Scene getScene() {
         return scene;
+    }
+
+    private ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
+
+    private void startAutoPlaceRobot() {
+        controller.autoPlaceRobotsForMine();
+        executor = Executors.newScheduledThreadPool(1);
+        executor.scheduleAtFixedRate(() -> {
+            Platform.runLater(this::simulateAutoRobotMove);
+        }, 0, 1, TimeUnit.SECONDS);
+    }
+
+    private void simulateAutoRobotMove() {
+        Robot currentRobot = controller.getCurrentRobot();
+        List<int[]> path = currentRobot.getRobotPaths();
+        int currentIndex = currentRobot.getCurrentIndexPath();
+        boolean isAllMineExhausted = false;
+        if (currentIndex < path.size()) {
+            int[] newPos = path.get(currentIndex);
+            int[] oldPos = currentRobot.getCurrentPosition();
+            controller.moveRobot(oldPos, newPos[0], newPos[1]);
+            currentIndex++;
+            currentRobot.setCurrentIndexPath(currentIndex);
+        } else {
+            System.out.printf("%s", currentRobot.getStatus());
+
+            if(currentRobot.isFinding()) {
+                // currentRobot.setStatus(StatusRobotType.MINING);
+                controller.loopHavestResources(currentRobot);
+            } else if (currentRobot.isDepositing()) {
+                controller.loopDepositResources(currentRobot);
+                isAllMineExhausted = controller.isMineExhausted();
+            }
+        }
+
+        updateRobotTurnLabel();
+        controller.nextRobot();
+        controller.updateGridConsole();
+        updateLogs();
+        updateView();
+
+        if(isAllMineExhausted) {
+            if(isAllFindingStatus(controller.getRobots())) { // all robot deposited mine
+                robotTurnLabel.setText("Le jeu est terminé");
+                robotTurnLabel.setTextFill(Color.BLACK);
+                executor.shutdown();
+            }
+        }
     }
 
     public void updateView() {
@@ -124,6 +195,14 @@ public class GridView extends Application {
         label.setTextFill(color);
         label.setFont(Font.font("Arial", FontWeight.BOLD, 18));
         return label;
+    }
+
+    public void updateLogs() {
+        List<SecteurInfo> addedSecteurs = controller.getAddedSecteurs();
+        for (SecteurInfo secteurInfo : addedSecteurs) {
+            String messages = secteurInfo.toString();
+            logs.appendText(messages + "\n");
+        }
     }
 
     public void printGrid(Grid grille) {
