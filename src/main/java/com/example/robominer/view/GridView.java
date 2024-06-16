@@ -91,7 +91,6 @@ public class GridView extends Application {
         Robot currentRobot = controller.getCurrentRobot();
         List<int[]> path = currentRobot.getRobotPaths();
         int currentIndex = currentRobot.getCurrentIndexPath();
-        boolean isAllFinding = false;
         boolean isAllMineExhausted = false;
         if (currentIndex < path.size()) {
             int[] newPos = path.get(currentIndex);
