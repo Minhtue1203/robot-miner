@@ -93,13 +93,14 @@ public class GridController {
                 int number = robotCounter;
                 Robot robot =  new Robot(row, col, number, type, capacityStorage, capacityExtraction);
                 grid.setSecteur(row, col, robot);
+                grid.getSecteur(row, col).setVisited(true); // Marquer le secteur initial du robot comme visité
                 added++;
                 robots.add(robot);
                 addedSecteurs.add(new SecteurInfo(SecteurType.ROBOT, number, row, col, type, 0, capacityStorage));
-                // robotPositions.add(new int[]{row, col});
             }
         }
     }
+
 
     private void addRandomSecteur(int count, Secteur sector) {
         int added = 0;
@@ -144,6 +145,12 @@ public class GridController {
                 } else {
                     grid.setSecteur(newX, newY, getCurrentRobot());
                 }
+
+                // Marquer le secteur comme visité
+                target.setVisited(true);
+                grid.getSecteur(newX, newY).setVisited(true);
+                markAdjacentSectorsAsVisited(newX, newY);
+
                 updateRobotSecteurInfo(currentX, currentY, newX, newY);
                 getCurrentRobot().updatePosition(newX, newY);
                 return true;
@@ -153,6 +160,22 @@ public class GridController {
         }
         return false;
     }
+
+    private void markAdjacentSectorsAsVisited(int x, int y) {
+        int[][] directions = {
+                {0, 1}, {1, 0}, {0, -1}, {-1, 0}, // est, sud, ouest, nord
+        };
+
+        for (int[] dir : directions) {
+            int newX = x + dir[0];
+            int newY = y + dir[1];
+            if (grid.isPositionValid(newX, newY)) {
+                grid.getSecteur(newX, newY).setVisited(true);
+            }
+        }
+    }
+
+
 
     public boolean moveRobotUp() {
         int[] robotPosition = getCurrentRobot().getCurrentPosition();

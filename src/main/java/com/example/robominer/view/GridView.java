@@ -137,15 +137,18 @@ public class GridView extends Application {
                 StackPane stackPane = new StackPane();
                 Rectangle rect = new Rectangle(SECTEUR_SIZE, SECTEUR_SIZE);
                 rect.setStroke(Color.BLACK);
-                if (secteur instanceof Water) {
+
+                if (!secteur.isVisited()) {
+                    color = Color.BLACK;
+                } else if (secteur instanceof Water) {
                     color = Color.BLUE;
                 } else if (secteur instanceof Warehouse) {
                     Warehouse warehouse = (Warehouse) secteur;
-                    color = warehouse.getColor();
+                    color = warehouse.getMineralType() == MineralType.NICKEL ? Color.GREEN : warehouse.getColor(); // Changer la couleur de l'entrepôt de nickel
                 } else if (secteur instanceof Mine) {
                     Mine mine = (Mine) secteur;
                     color = mine.getColor();
-            } else if (secteur instanceof Robot) {
+                } else if (secteur instanceof Robot) {
                     Robot robot = (Robot) secteur;
                     color = robot.getColor();
                 } else {
@@ -156,8 +159,9 @@ public class GridView extends Application {
                 gridPane.add(stackPane, col, row);
             }
         }
-//        updateRobotTurnLabel();
     }
+
+
 
     private void initRobotTurnLabel () {
         robotTurnLabel = new Label();
@@ -184,7 +188,7 @@ public class GridView extends Application {
         Label nickelMineLabel = createLegendLabel("Mine du nickel", Color.GREY);
         Label goldMineLabel = createLegendLabel("Mine de l'or", Color.YELLOW);
         Label goldwarehouseLabel = createLegendLabel("Warehouse de l'or", Color.ORANGE);
-        Label nickelwarehouseLabel = createLegendLabel("Warehouse du nickel", Color.BLACK);
+        Label nickelwarehouseLabel = createLegendLabel("Warehouse du nickel", Color.GREEN);
 
         legendBox.getChildren().addAll(waterLabel, nickelMineLabel, goldMineLabel, goldwarehouseLabel, nickelwarehouseLabel);
         return legendBox;

@@ -51,8 +51,11 @@ public class Warehouse extends Secteur {
     public Color getColorMineral(MineralType mineralType) {
         if(mineralType.equals(MineralType.GOLD)) {
             return Color.ORANGE;
+        } else if (mineralType.equals(MineralType.NICKEL)) {
+            return Color.GREEN; // Changer la couleur de l'entrepôt de nickel
         } else {
             return Color.BLACK;
         }
     }
+
 }
