@@ -12,8 +12,7 @@
 ## Lancer l'application :rocket:
 
 - Lancer manuellement via Intellij
-- /out/artifacts/robot_miner_jar/robo_miner.jar ne fonctionne pas en raison suivant:
-  Error: JavaFX runtime components are missing, and are required to run this application (en cours d'analyse)
+- Lancer le fichier robot_miner.jar, qui se trouve dans le chemin suivant: /out/artifacts/robot_miner_jar2/robo_miner.jar
 
 ## Description de l'application de jeu :book:
 
