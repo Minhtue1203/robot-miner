@@ -1,7 +1,7 @@
 # Robot miner :robot:
 
-SAE 2.01 - [feat/sae-201](https://github.com/Minhtue1203/robot-miner/tree/feat/sae-201)
-SAE 2.02 - [master](https://github.com/Minhtue1203/robot-miner/tree/master)
+- SAE 2.01 - [feat/sae-201](https://github.com/Minhtue1203/robot-miner/tree/feat/sae-201)
+- SAE 2.02 - [master](https://github.com/Minhtue1203/robot-miner/tree/master)
 
 ## Developpement Environnement :gear:
 - JavaFx
