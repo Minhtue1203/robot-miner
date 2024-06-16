@@ -13,6 +13,7 @@ public class Grid {
             }
         }
     }
+
     public int getSize() {
         return this.SIZE;
     }

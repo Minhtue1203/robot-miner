@@ -29,6 +29,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import static com.example.robominer.util.Helper.isAllFindingStatus;
+
 public class GridView extends Application {
     private GridController controller;
     private GridPane gridPane;
@@ -89,7 +91,7 @@ public class GridView extends Application {
         Robot currentRobot = controller.getCurrentRobot();
         List<int[]> path = currentRobot.getRobotPaths();
         int currentIndex = currentRobot.getCurrentIndexPath();
-
+        boolean isAllMineExhausted = false;
         if (currentIndex < path.size()) {
             int[] newPos = path.get(currentIndex);
             int[] oldPos = currentRobot.getCurrentPosition();
@@ -97,19 +99,30 @@ public class GridView extends Application {
             currentIndex++;
             currentRobot.setCurrentIndexPath(currentIndex);
         } else {
+            System.out.printf("%s", currentRobot.getStatus());
+
             if(currentRobot.isFinding()) {
                 // currentRobot.setStatus(StatusRobotType.MINING);
                 controller.loopHavestResources(currentRobot);
             } else if (currentRobot.isDepositing()) {
                 controller.loopDepositResources(currentRobot);
-                //System.out.println("Robot is depositing");
+                isAllMineExhausted = controller.isMineExhausted();
             }
         }
+
         updateRobotTurnLabel();
         controller.nextRobot();
         controller.updateGridConsole();
         updateLogs();
         updateView();
+
+        if(isAllMineExhausted) {
+            if(isAllFindingStatus(controller.getRobots())) { // all robot deposited mine
+                robotTurnLabel.setText("Le jeu est terminé");
+                robotTurnLabel.setTextFill(Color.BLACK);
+                executor.shutdown();
+            }
+        }
     }
 
     public void updateView() {

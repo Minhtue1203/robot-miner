@@ -94,7 +94,7 @@ public class AutoMine {
                 if (dist[i][j] < minDist) {
                     if (robot.isFinding() && target instanceof Mine) { // finding mine
                         Mine mine = (Mine) target;
-                        if (robot.getMineralType() == mine.getMineralType()) {
+                        if (robot.getMineralType() == mine.getMineralType() && mine.getQuantity() > 0) {
                             minDist = dist[i][j];
                             mineX = i;
                             mineY = j;
