@@ -1,5 +1,8 @@
 # Robot miner :robot:
 
+- SAE 2.01 - [feat/sae-201](https://github.com/Minhtue1203/robot-miner/tree/feat/sae-201)
+- SAE 2.02 - [master](https://github.com/Minhtue1203/robot-miner/tree/master)
+
 ## Developpement Environnement :gear:
 - JavaFx
 - Maven 3.9.1
@@ -10,7 +13,7 @@
 
 - Lancer manuellement via Intellij
 - /out/artifacts/robot_miner_jar/robo_miner.jar ne fonctionne pas en raison suivant:
-Error: JavaFX runtime components are missing, and are required to run this application (en cours d'analyse)
+  Error: JavaFX runtime components are missing, and are required to run this application (en cours d'analyse)
 
 ## Description de l'application de jeu :book:
 
@@ -25,7 +28,7 @@ Error: JavaFX runtime components are missing, and are required to run this appli
 La position de chaque objet (eau, mines, entrepôts, robots) est gérée de manière aléatoire et change à chaque fois que le jeu est relancé.
 
 ### Restrictions de déplacement :stop_sign:
-Les robots ne peuvent pas se déplacer sur des cases d'eau. 
+Les robots ne peuvent pas se déplacer sur des cases d'eau.
 
 Chaque robot ne peut effectuer qu'une seule action par tour.
 - Déplacement
@@ -47,8 +50,3 @@ Chaque robot ne peut effectuer qu'une seule action par tour.
 <kbd><br>F<br></kbd> : Déposer les ressources dans l'entrepôt :house:
 
 <kbd><br>R<br></kbd> : Récolter des ressources dans la mine :pick:
-
-
-
-
-
