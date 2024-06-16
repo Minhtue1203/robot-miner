@@ -60,11 +60,12 @@ public class HelloApplication extends Application {
 
     public void initialize(GridController controller) {
         Random random = new Random();
-        controller.addRandomWater( 1 + random.nextInt(9)); // Ajouter 3 plans d'eau
-        controller.addRandomMine(2 + random.nextInt(2)); // Ajouter 3 mines avec des numéros uniques
-        controller.addRandomWarehouse(2); // Ajouter 2 entrepôts avec des numéros uniques
-        controller.addRandomRobot(2);
+        controller.addRandomWater(1 + random.nextInt(9)); // Ajouter des plans d'eau aléatoires
+        controller.addRandomMine(2 + random.nextInt(2)); // Ajouter des mines aléatoires
+        controller.addRandomWarehouse(2); // Ajouter des entrepôts aléatoires
+        controller.addRandomRobot(2); // Ajouter des robots aléatoires
     }
+
 
 //    public void playAutoMode(GridView view, GridController controller) {
 //        controller.autoPlaceRobot();
