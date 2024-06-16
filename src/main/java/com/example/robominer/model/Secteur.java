@@ -2,6 +2,7 @@ package com.example.robominer.model;
 
 public class Secteur {
     protected char[][] matrice;
+    protected boolean visited;
 
     public Secteur() {
         matrice = new char[2][2];
@@ -10,9 +11,18 @@ public class Secteur {
                 matrice[i][j] = '.';
             }
         }
+        this.visited = false;
     }
 
     public char[][] getMatrice() {
         return matrice;
+    }
+
+    public boolean isVisited() {
+        return visited;
+    }
+
+    public void setVisited(boolean visited) {
+        this.visited = visited;
     }
 }
